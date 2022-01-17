@@ -10,7 +10,7 @@
    <children>
       <Label prefHeight="47.0" prefWidth="99.0" text="About">
          <font>
-            <Font size="18.0" />
+            <Font name="Arial Black" size="18.0" />
          </font>
          <padding>
             <Insets bottom="10.0" left="20.0" top="10.0" />
@@ -19,7 +19,7 @@
             <Insets />
          </VBox.margin>
       </Label>
-      <Label prefHeight="76.0" prefWidth="201.0" text="JvaFX application demo">
+      <Label prefHeight="54.0" prefWidth="164.0" text="JvaFX application demo">
          <padding>
             <Insets left="20.0" />
          </padding>

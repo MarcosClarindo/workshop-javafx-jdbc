@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -34,11 +35,16 @@ public class MainViewController implements Initializable{
 	}
 	@FXML
 	public void onMenuItemDepartmentAction() {
-		loadView2("/gui/DepartmentList.fxml");
+		loadView("/gui/DepartmentList.fxml", (DepartmentListController  controller) -> {
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
+			
+		});
 	}
+	
 	@FXML
 	public void onMenuItemAboutAction() {
-		loadView("/gui/About.fxml"); // chamando o métedo
+		loadView("/gui/About.fxml", x -> {}); // chamando o métedo
 	}
 	
 	@Override
@@ -46,7 +52,7 @@ public class MainViewController implements Initializable{
 	}
 	
 	// função para abrir uma segunda tela 
-	private synchronized void loadView(String absoluteName) {
+	private synchronized <T> void loadView(String absoluteName, Consumer<T> initializingAction) {
 		try {
 			//para carregar uma tela
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
@@ -60,33 +66,15 @@ public class MainViewController implements Initializable{
 			mainVBox.getChildren().clear();
 			mainVBox.getChildren().add(mainMenu);
 			mainVBox.getChildren().addAll(newVBox.getChildren());
+			
+			T controller = loader.getController();
+			// executando a função que foi passada como argumento
+			initializingAction.accept(controller);
 		}
 		catch(IOException e) {
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
-	private synchronized void loadView2(String absoluteName) {
-		try {
-			//para carregar uma tela
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-			VBox newVBox = loader.load();
-			
-			Scene mainScene = Main.getMainScene();
-			VBox mainVBox = (VBox)((ScrollPane) mainScene.getRoot()).getContent(); //casting para o VBox // ScrollPane // pega o primeiro elemento 
-			
-			// incluindo o Min menu na Scena principal do painel
-			Node mainMenu = mainVBox.getChildren().get(0);
-			mainVBox.getChildren().clear();
-			mainVBox.getChildren().add(mainMenu);
-			mainVBox.getChildren().addAll(newVBox.getChildren());
-			
-			DepartmentListController controller = loader.getController();
-			controller.setDepartmentService(new DepartmentService()); // injetando indepedência
-			controller.updateTableView();
-		}
-		catch(IOException e) {
-			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
-		}
-	}
+	
 }

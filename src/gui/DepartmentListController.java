@@ -27,6 +27,7 @@ import model.entities.Department;
 import model.service.DepartmentService;
 
 public class DepartmentListController implements Initializable{
+	
 	private DepartmentService service; // dependência
 	
 	// criando referências para os botões
@@ -89,6 +90,7 @@ public class DepartmentListController implements Initializable{
 			
 			DepartmentFormController controller = loader.getController();
 			controller.setDepartment(obj);
+			controller.setDepartmentService(new DepartmentService());
 			controller.updateFormData();
 			
 			// instanciando um novo Stage

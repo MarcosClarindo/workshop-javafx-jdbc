@@ -1,20 +1,22 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import model.entities.Department;
 import model.service.DepartmentService;
 
@@ -24,6 +26,8 @@ public class DepartmentFormController implements Initializable {
 	private Department entity;
 	
 	private DepartmentService service;
+	
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	@FXML
 	private TextField txtId;
@@ -48,6 +52,11 @@ public class DepartmentFormController implements Initializable {
 		this.service = service;
 	}
 	
+	// método para adicionar conteúdo na lista
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
+	}
+	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
 		
@@ -62,6 +71,10 @@ public class DepartmentFormController implements Initializable {
 			entity = getFormData();
 			// salvando no banco de dados
 			service.saveOrUpdate(entity);
+			
+			// notificando a mudança na lista
+			notifyDataChangeListeners();
+			
 			// fechar a janela após o saving
 			Utils.currentStage(event).close();
 		}
@@ -70,10 +83,17 @@ public class DepartmentFormController implements Initializable {
 		}
 	}
 	
+	private void notifyDataChangeListeners() {
+		for (DataChangeListener listener : dataChangeListeners) {
+			listener.onDataChanged();
+		}
+		
+	}
+
 	private Department getFormData() {
 		Department obj = new Department();
 		
-		obj.setId(Utils.tryParseToInt(txtId.getText())); // transforamando string para inteiro
+		obj.setId(Utils.tryParseToInt(txtId.getText())); // transformando string para inteiro
 		obj.setName(txtName.getText());
 		
 		return obj;
@@ -81,7 +101,7 @@ public class DepartmentFormController implements Initializable {
 	
 	@FXML
 	public void onBtCancelAction(ActionEvent event) {
-		Utils.currentStage(event).close();;
+		Utils.currentStage(event).close();
 	}
 	
 	@Override

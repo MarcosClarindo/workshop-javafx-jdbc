@@ -3,10 +3,11 @@ package model.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 
-// excessçao para carregar todos os errors possiveis 
+// excessão para carregar todos os errors possiveis 
 public class ValidationException extends RuntimeException{
 	
-	private static final long seriaVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+
 	
 	private Map<String, String> errors = new HashMap<>();
 			

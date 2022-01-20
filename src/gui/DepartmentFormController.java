@@ -103,7 +103,7 @@ public class DepartmentFormController implements Initializable {
 		
 		obj.setId(Utils.tryParseToInt(txtId.getText())); // transformando string para inteiro
 		
-		if(txtName.getText() == null || txtName.getText().trim().equals(""));{
+		if(txtName.getText() == null || txtName.getText().trim().equals("")){
 			// mensagem de error
 			exception.addError("name", "Fild can´t be empty");
 		}
